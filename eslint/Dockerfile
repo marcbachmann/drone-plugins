@@ -1,5 +1,5 @@
-# docker build -t marcbachman/eslint:7.14.0 .
-FROM node:14-alpine
+# docker build -t marcbachmann/eslint:8.0.1 .
+FROM livingdocs/node:16
 USER node
 ENV NODE_PATH /eslint-drone-plugin/node_modules
 WORKDIR /eslint-drone-plugin
