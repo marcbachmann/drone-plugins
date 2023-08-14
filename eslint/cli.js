@@ -47,7 +47,7 @@ async function start () {
   if (process.env.GH_TOKEN) {
     const github = new Octokit({
       auth: process.env.GH_TOKEN,
-      userAgent: 'marcbachmann/eslint:7.14.0'
+      userAgent: 'marcbachmann/eslint:8.47.0'
     })
 
     github.repos.createCommitStatus({
