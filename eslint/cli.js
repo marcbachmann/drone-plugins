@@ -1,19 +1,10 @@
 #!/usr/bin/env node
-const fs = require('fs')
+'use strict'
 const {Octokit} = require('@octokit/rest')
 const {ESLint} = require('eslint')
 
 async function start () {
-  let defaultExts = '.js'
-  try {
-    const config = fs.readFileSync('./.eslintrc.json', 'utf8')
-    if (config.includes('vue-eslint-parser')) defaultExts = '.js,.vue'
-    // eslint-disable-next-line
-  } catch (err) {}
-
-  // eslint-disable-next-line max-len
-  const extensions = [...new Set((process.env.DRONE_PLUGIN_EXTENSIONS || defaultExts).split(/[ ,]/).filter(Boolean))]
-  const eslint = new ESLint({extensions, cwd: process.cwd()})
+  const eslint = new ESLint({cwd: process.cwd()})
   const argv = process.argv.slice(2)
   const files = argv.length ? argv : ['./']
 
