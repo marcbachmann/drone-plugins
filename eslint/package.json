@@ -22,7 +22,7 @@
     "eslint-plugin-react": "^7.34.3",
     "eslint-plugin-vue": "^9.25.0",
     "globals": "^15.8.0",
-    "react": "^18.3.1",
+    "react": "^19.0.0",
     "typescript": "^5.4.5",
     "vue-eslint-parser": "^9.4.2"
   }
