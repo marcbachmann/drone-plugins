@@ -2,9 +2,11 @@
 'use strict'
 const {Octokit} = require('@octokit/rest')
 const {ESLint} = require('eslint')
+const path = require('path')
 
-async function start () {
-  const eslint = new ESLint({cwd: process.cwd()})
+async function run (directory) {
+  const dir = path.join(process.cwd(), directory)
+  const eslint = new ESLint({cwd: dir})
   const argv = process.argv.slice(2)
   const files = argv.length ? argv : ['./']
 
@@ -14,20 +16,11 @@ async function start () {
     w: w + r.warningCount
   }), {e: 0, w: 0})
 
-  const message = []
+  const message = [`Directory: ${dir}`]
 
-  if (errorCount) {
-    process.exitCode = 1
-    message.push(`${errorCount} Errors`)
-  }
-
-  if (warningCount) {
-    message.push(`${warningCount} Warnings`)
-  }
-
-  if (!message.length) {
-    message.push(`Congrats, everything's fine`)
-  }
+  if (errorCount) message.push(`${errorCount} Errors`)
+  if (warningCount) message.push(`${warningCount} Warnings`)
+  if (!message.length) message.push(`Congrats, everything's fine`)
 
   const formatter = await eslint.loadFormatter('pretty')
   const log = formatter.format(results)
@@ -35,13 +28,47 @@ async function start () {
   process.stdout.write(`${message.join('\n')}\n`)
   if (log) process.stdout.write(log)
 
-  if (process.env.GH_TOKEN) {
-    const github = new Octokit({
-      auth: process.env.GH_TOKEN,
-      userAgent: 'marcbachmann/eslint:8.47.0'
-    })
+  return {errorCount, warningCount}
+}
 
-    github.repos.createCommitStatus({
+async function start () {
+  const directories = (process.env.PLUGIN_DIRECTORY || './').split(/, ?/)
+
+  const github = process.env.GH_TOKEN && new Octokit({
+    auth: process.env.GH_TOKEN,
+    userAgent: 'marcbachmann/eslint:8.47.0'
+  })
+
+  if (github) {
+    await github.repos.createCommitStatus({
+      sha: process.env.DRONE_COMMIT_SHA,
+      target_url: `${process.env.DRONE_BUILD_LINK}`,
+      owner: process.env.DRONE_REPO_OWNER,
+      repo: process.env.DRONE_REPO_NAME,
+      context: 'eslint',
+      description: `Running eslint on directories ${directories.join(', ')}`,
+      state: 'pending'
+    })
+  }
+
+  let errorCount = 0
+  let warningCount = 0
+
+  for (const dir of directories) {
+    const res = await run(dir)
+    errorCount += res.errorCount
+    warningCount += res.warningCount
+  }
+
+  if (errorCount) process.exitCode = 1
+
+  if (github) {
+    const message = []
+    if (errorCount) message.push(`${errorCount} Errors`)
+    if (warningCount) message.push(`${warningCount} Warnings`)
+    if (!message.length) message.push(`Congrats, everything's fine`)
+
+    await github.repos.createCommitStatus({
       sha: process.env.DRONE_COMMIT_SHA,
       target_url: `${process.env.DRONE_BUILD_LINK}`,
       owner: process.env.DRONE_REPO_OWNER,
