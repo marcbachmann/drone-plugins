@@ -33,9 +33,9 @@ async function run (directory) {
 
 async function start () {
   const directories = (process.env.PLUGIN_DIRECTORY || './').split(/, ?/)
-
-  const github = process.env.GH_TOKEN && new Octokit({
-    auth: process.env.GH_TOKEN,
+  const githubToken = process.env.PLUGIN_GH_TOKEN || process.env.GH_TOKEN
+  const github = githubToken && new Octokit({
+    auth: githubToken,
     userAgent: 'marcbachmann/eslint:8.47.0'
   })
 
