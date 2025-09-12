@@ -4,7 +4,7 @@
 ```yaml
 steps:
 - name: eslint
-  image: marcbachmann/eslint:9.18.0
+  image: marcbachmann/eslint:9.35.0
   settings:
     # This can be used to report the status to github, the config is optional
     gh_token:
@@ -16,6 +16,6 @@ steps:
 
 ```bash
 cd eslint
-docker build -t marcbachmann/eslint:9.18.0 .
-docker push marcbachmann/eslint:9.18.0
+docker build -t marcbachmann/eslint:9.35.0 .
+docker push marcbachmann/eslint:9.35.0
 ```
