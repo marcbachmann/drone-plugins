@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 'use strict'
+const path = require('node:path')
 const {Octokit} = require('@octokit/rest')
 const {ESLint} = require('eslint')
-const path = require('path')
 
 async function run (directory) {
   const dir = path.join(process.cwd(), directory)
