@@ -17,7 +17,7 @@
     "eslint": "^9.35.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-formatter-pretty": "^5.0.0",
-    "eslint-plugin-jsdoc": "^56.1.2",
+    "eslint-plugin-jsdoc": "^62.8.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-vue": "^10.4.0",

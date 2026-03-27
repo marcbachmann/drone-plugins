@@ -20,7 +20,7 @@ async function run (directory) {
 
   if (errorCount) message.push(`${errorCount} Errors`)
   if (warningCount) message.push(`${warningCount} Warnings`)
-  if (!message.length) message.push(`Congrats, everything's fine`)
+  if (message.length === 1) message.push(`Congrats, everything's fine`)
 
   const formatter = await eslint.loadFormatter('pretty')
   const log = formatter.format(results)
